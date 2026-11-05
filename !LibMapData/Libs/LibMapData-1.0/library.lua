@@ -1872,6 +1872,14 @@ do
 			['floors'] = 0, ['name'] = "Riverlands", ['rzti'] = 0, ['map_type'] = 0, ['continent'] = 2, ['link'] = 0, ['transform'] = 0,
 			[1] = {4850.0,3233.333984375,1891.666015625,-6466.666015625,6741.666015625,-9700.0},
 		}
+		for _, zone in ipairs({GetMapZones(2)}) do
+			if zone == "Riverglades" then
+				mapData[14][1] = {35199.900390625,23466.6000976562,-16000.0,7466.6000976562,19199.900390625,-16000.0}
+			end
+		end
+		if CreateFrame("Frame"):CreateTexture():SetTexture("Interface\\WorldMap\\Redridge\\RENDERSCAMP3") then
+			mapData[36][1] = {2170.833984375,1447.916015625,1681.25,-8575.0,3852.083984375,-10022.916015625}
+		end
 	end
 	-- Create Reverse map
 	for k,v in pairs(mapData) do
