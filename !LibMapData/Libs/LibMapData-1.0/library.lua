@@ -1868,6 +1868,10 @@ do
 			['floors'] = 0, ['name'] = "StillpineHold3_", ['rzti'] = 530, ['map_type'] = 0, ['continent'] = 1, ['link'] = 0, ['transform'] = 1,
 			[1] = {474.990234375,316.66015625,12247.5546875,-3009.169921875,12722.544921875,-3325.830078125},
 		}
+		mapData[1100] = {
+			['floors'] = 0, ['name'] = "Riverlands", ['rzti'] = 0, ['map_type'] = 0, ['continent'] = 2, ['link'] = 0, ['transform'] = 0,
+			[1] = {4850.0,3233.333984375,1891.666015625,-6466.666015625,6741.666015625,-9700.0},
+		}
 	end
 	-- Create Reverse map
 	for k,v in pairs(mapData) do

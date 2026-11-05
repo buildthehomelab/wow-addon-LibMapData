@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title: !LibMapData
 ## Notes: LibMapData-1.0 with map data for the extra zones, caves and instances Project Reforged HD adds. Loads first so addons that bundle the library stop printing "missing data" at login.
-## Version: 1.0.0
+## Version: 1.0.1
 ## X-Embeds: LibStub, CallbackHandler-1.0, LibMapData-1.0
 
 Libs\LibStub\LibStub.lua
