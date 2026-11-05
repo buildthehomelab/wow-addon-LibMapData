@@ -21,9 +21,11 @@ MINOR = 1000  # above every 3.3.5 copy (57) and the Cata-era 99, so ours wins in
 CONTINENT_MAPS = {0: 2, 1: 1, 530: 3, 571: 4}  # map id -> GetMapContinents() index
 # WoW Forever's Riverglades, from its UiMapAssignment, for clients whose patch adds it.
 EXTRA_ZONES = [(1100, "Riverlands", 0, -1891.666015625, -6741.666015625, -6466.666015625, -9700.0)]
-# The same patch moves these rows to Forever's: (WorldMapArea id, left, right, top, bottom). Only on a client that has Riverlands.
-MOVED_ZONES = [(14, 16000.0, -19199.900390625, 7466.6000976562, -16000.0),
-               (36, -1681.25, -3852.083984375, -8575.0, -10022.916015625)]
+# The same patch moves the continent's row to Forever's, and can bring Forever's Redridge: (left, right, top, bottom).
+FOREVER_CONTINENT = (14, 16000.0, -19199.900390625, 7466.6000976562, -16000.0)
+FOREVER_REDRIDGE = (36, -1681.25, -3852.083984375, -8575.0, -10022.916015625)
+# Forever's Render's Camp overlay is four files and the client's two, so the third says which map a client has.
+REDRIDGE_PROBE = r"Interface\\WorldMap\\Redridge\\RENDERSCAMP3"  # as Lua source
 
 H = ctypes.c_void_p
 
@@ -117,11 +119,16 @@ def main():
         lines.append(f"\t\t\t[1] = {{{','.join(num(v) for v in floor_from_bounds(left, right, top, bottom))}}},")
         lines.append("\t\t}")
 
+    def row(wid, left, right, top, bottom):
+        return f"mapData[{wid}][1] = {{{','.join(num(v) for v in floor_from_bounds(left, right, top, bottom))}}}"
+
     lines.append("\t\tfor _, zone in ipairs({GetMapZones(%d)}) do" % CONTINENT_MAPS[0])
     lines.append("\t\t\tif zone == \"Riverglades\" then")
-    for wid, left, right, top, bottom in MOVED_ZONES:
-        lines.append(f"\t\t\t\tmapData[{wid}][1] = {{{','.join(num(v) for v in floor_from_bounds(left, right, top, bottom))}}}")
+    lines.append("\t\t\t\t" + row(*FOREVER_CONTINENT))
     lines.append("\t\t\tend")
+    lines.append("\t\tend")
+    lines.append(f"\t\tif CreateFrame(\"Frame\"):CreateTexture():SetTexture(\"{REDRIDGE_PROBE}\") then")
+    lines.append("\t\t\t" + row(*FOREVER_REDRIDGE))
     lines.append("\t\tend")
 
     added = (len(lines) and sum(1 for l in lines if l.startswith("\t\tmapData[")))
