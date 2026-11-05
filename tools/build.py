@@ -19,6 +19,8 @@ UPSTREAM = os.path.join(ROOT, "upstream", "LibMapData-1.0.lua")
 OUT = os.path.join(ROOT, "!LibMapData", "Libs", "LibMapData-1.0", "library.lua")
 MINOR = 1000  # above every 3.3.5 copy (57) and the Cata-era 99, so ours wins in LibStub
 CONTINENT_MAPS = {0: 2, 1: 1, 530: 3, 571: 4}  # map id -> GetMapContinents() index
+# WoW Forever's Riverglades, from its UiMapAssignment, for clients whose patch adds it.
+EXTRA_ZONES = [(1100, "Riverlands", 0, -1891.666015625, -6741.666015625, -6466.666015625, -9700.0)]
 
 H = ctypes.c_void_p
 
@@ -102,6 +104,14 @@ def main():
                      f"['continent'] = {continent}, ['link'] = 0, ['transform'] = {transform},")
         for i, f in enumerate(floors, 1):
             lines.append(f"\t\t\t[{i}] = {{{','.join(num(v) for v in f)}}},")
+        lines.append("\t\t}")
+
+    # Zones a client patch adds beyond patch-M: (WorldMapArea id, map file, map id, left, right, top, bottom).
+    for wid, name, map_id, left, right, top, bottom in EXTRA_ZONES:
+        lines.append(f"\t\tmapData[{wid}] = {{")
+        lines.append(f"\t\t\t['floors'] = 0, ['name'] = \"{name}\", ['rzti'] = {map_id}, ['map_type'] = 0, "
+                     f"['continent'] = {CONTINENT_MAPS[map_id]}, ['link'] = 0, ['transform'] = 0,")
+        lines.append(f"\t\t\t[1] = {{{','.join(num(v) for v in floor_from_bounds(left, right, top, bottom))}}},")
         lines.append("\t\t}")
 
     added = (len(lines) and sum(1 for l in lines if l.startswith("\t\tmapData[")))
